@@ -6,6 +6,8 @@ RUN apt-get update && apt-get install -y \
     gcc \
     default-libmysqlclient-dev \
     pkg-config \
+    netcat-openbsd \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Создаем директорию приложения
