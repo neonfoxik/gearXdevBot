@@ -9,16 +9,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
-SECRET_KEY = 'w337k69z4)(z^v@^(^k^^s6v^6gp!hphhk15mlt$s$c#0gwexx'
+SECRET_KEY = os.getenv('SECRET_KEY', 'w337k69z4)(z^v@^(^k^^s6v^6gp!hphhk15mlt$s$c#0gwexx')
 # SECURITY WARNING: keep the secret key used in production secret!
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
-LOCAL = os.getenv('LOCAL')
+LOCAL = os.getenv('LOCAL', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 OWNER_ID = os.getenv('OWNER_ID')
@@ -63,12 +63,26 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'dd.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Database configuration
+# Используем PostgreSQL если POSTGRES_DB установлен, иначе SQLite
+if os.getenv('POSTGRES_DB'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('POSTGRES_DB', 'gearxdevbot'),
+            'USER': os.getenv('POSTGRES_USER', 'postgres'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),
+            'HOST': os.getenv('POSTGRES_HOST', 'db'),
+            'PORT': os.getenv('POSTGRES_PORT', '5432'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

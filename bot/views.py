@@ -9,7 +9,7 @@ from telebot.apihelper import ApiTelegramException
 from telebot.types import Update
 
 from bot import bot, logger
-from bot.handlers import registration  # Импортируем обработчики для их регистрации
+from bot.handlers import common  # Импортируем обработчики для их регистрации
 
 
 @require_GET

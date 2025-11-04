@@ -5,12 +5,10 @@ from telebot.types import (
 
 
 main_markup = InlineKeyboardMarkup()
-btn1 = InlineKeyboardButton("👤 Профиль 👤", callback_data="profile")
-btn2 = InlineKeyboardButton("💰 Монеты 💰", callback_data="coins_menu")
-btn3 = InlineKeyboardButton("🎯 Рефералка 🎯", callback_data="referal_menu")
-btn4 = InlineKeyboardButton("📚 Туториал 📚", callback_data="FAQ")
-btn5 = InlineKeyboardButton("⭐ Наши отзывы ⭐", url="https://t.me/manahegevijgcv")
-main_markup.add(btn1, btn2).add(btn3, btn4).add(btn5)
+btn1 = InlineKeyboardButton("🌐 Сайт 🌐", url="https://example.com")
+btn2 = InlineKeyboardButton("⭐ Отзывы ⭐", url="https://t.me/manahegevijgcv")
+btn3 = InlineKeyboardButton("📝 Заказать", url="https://t.me/GearXdev")
+main_markup.add(btn1).add(btn2).add(btn3)
 
 check_subscription = InlineKeyboardMarkup()
 btn1 = InlineKeyboardButton("✅ Проверить подписку ✅", callback_data="check_subscription")
