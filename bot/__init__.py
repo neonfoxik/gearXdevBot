@@ -10,6 +10,20 @@ bot = telebot.TeleBot(
     skip_pending=True,
 )
 
+# Импортируем views для регистрации обработчиков
+from . import views
+
+# Установка вебхука при запуске
+try:
+    if settings.HOOK:
+        webhook_url = f"{settings.HOOK}/bot/{settings.BOT_TOKEN}"
+        bot.set_webhook(url=webhook_url)
+        logging.info(f'Webhook установлен: {webhook_url}')
+    else:
+        logging.warning('HOOK не установлен в настройках')
+except Exception as e:
+    logging.error(f"Ошибка при установке вебхука: {e}")
+
 # Отправка сообщения при старте
 try:
     bot_info = bot.get_me()
