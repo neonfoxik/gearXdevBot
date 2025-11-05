@@ -25,7 +25,7 @@ services:
     environment:
       - DEBUG=False
       - SECRET_KEY=ваш_надёжный_секретный_ключ_длиной_минимум_50_символов
-      - ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com,127.0.0.1,localhost
+      - ALLOWED_HOSTS=actiontest.ru
       - BOT_TOKEN=${BOT_TOKEN}
       - OWNER_ID=${OWNER_ID}
       - HOOK=${HOOK}
