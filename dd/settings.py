@@ -20,6 +20,28 @@ LOCAL = os.getenv('LOCAL', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
+# CSRF trusted origins for HTTPS
+CSRF_TRUSTED_ORIGINS = [
+    'https://actiontest.ru',
+    'https://www.actiontest.ru',
+    'http://actiontest.ru',  # для редиректа
+    'http://localhost',
+    'http://127.0.0.1',
+]
+
+# Также добавляем динамически из ALLOWED_HOSTS
+for host in ALLOWED_HOSTS:
+    host = host.strip()
+    if host and host != '*' and host not in ['localhost', '127.0.0.1']:
+        CSRF_TRUSTED_ORIGINS.extend([
+            f'https://{host}',
+            f'https://www.{host}',
+            f'http://{host}',
+        ])
+
+# Удаляем дубликаты
+CSRF_TRUSTED_ORIGINS = list(set(CSRF_TRUSTED_ORIGINS))
+
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 OWNER_ID = os.getenv('OWNER_ID')
 HOOK = os.getenv('HOOK')
