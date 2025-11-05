@@ -62,47 +62,46 @@ def test_webhook_endpoint():
 
     webhook_url = f"{settings.HOOK}/bot/{settings.BOT_TOKEN}"
 
+    # Исправляем URL - убираем дублирование /bot/
+    base_url = settings.HOOK.rstrip('/')
+    if base_url.endswith('/bot'):
+        status_url = f"{base_url}/status/"
+    else:
+        status_url = f"{base_url}/bot/status/"
+
+    print(f"📡 Тестируем URL: {status_url}")
+
+    # Сначала пробуем HTTPS с отключенной проверкой SSL
     try:
-        # Исправляем URL - убираем дублирование /bot/
-        base_url = settings.HOOK.rstrip('/')
-        if base_url.endswith('/bot'):
-            status_url = f"{base_url}/status/"
+        response = requests.get(status_url, timeout=10, verify=False)
+        print(f"📡 HTTPS статус endpoint: {response.status_code}")
+
+        if response.status_code == 200:
+            print("✅ Webhook endpoint доступен по HTTPS")
+            return
         else:
-            status_url = f"{base_url}/bot/status/"
+            print(f"⚠️ HTTPS вернул код {response.status_code}")
 
-        print(f"📡 Тестируем URL: {status_url}")
+    except requests.exceptions.SSLError as ssl_error:
+        print(f"❌ SSL ошибка: {ssl_error}")
+        print("🔄 Пробуем HTTP...")
 
-        # Сначала пробуем HTTPS с отключенной проверкой SSL
-        try:
-            response = requests.get(status_url, timeout=10, verify=False)
-            print(f"📡 HTTPS статус endpoint: {response.status_code}")
+    # Если HTTPS не работает, пробуем HTTP
+    try:
+        http_url = status_url.replace('https://', 'http://')
+        print(f"📡 Пробуем HTTP: {http_url}")
+        response = requests.get(http_url, timeout=10)
+        print(f"📡 HTTP статус endpoint: {response.status_code}")
 
-            if response.status_code == 200:
-                print("✅ Webhook endpoint доступен по HTTPS")
-                return
-            else:
-                print(f"⚠️ HTTPS вернул код {response.status_code}")
+        if response.status_code == 200:
+            print("✅ Webhook endpoint доступен по HTTP")
+            print("💡 Рекомендуется настроить HTTPS для production")
+        else:
+            print(f"❌ HTTP endpoint вернул код {response.status_code}")
 
-        except requests.exceptions.SSLError as ssl_error:
-            print(f"❌ SSL ошибка: {ssl_error}")
-            print("🔄 Пробуем HTTP...")
-
-        # Если HTTPS не работает, пробуем HTTP
-        try:
-            http_url = status_url.replace('https://', 'http://')
-            print(f"📡 Пробуем HTTP: {http_url}")
-            response = requests.get(http_url, timeout=10)
-            print(f"📡 HTTP статус endpoint: {response.status_code}")
-
-            if response.status_code == 200:
-                print("✅ Webhook endpoint доступен по HTTP")
-                print("💡 Рекомендуется настроить HTTPS для production")
-            else:
-                print(f"❌ HTTP endpoint вернул код {response.status_code}")
-
-        except requests.exceptions.RequestException as http_error:
-            print(f"❌ Ошибка подключения по HTTP: {http_error}")
-            print("🔍 Проверьте настройки nginx и домена")
+    except requests.exceptions.RequestException as http_error:
+        print(f"❌ Ошибка подключения по HTTP: {http_error}")
+        print("🔍 Проверьте настройки nginx и домена")
 
 if __name__ == "__main__":
     test_bot_response()
