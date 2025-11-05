@@ -22,6 +22,10 @@ from bot.keyboards import (
     ADMIN_MARKUP
 )
 
+# Логируем регистрацию обработчиков
+logger.info("Регистрация обработчиков команд бота...")
+logger.info("Обработчик /start зарегистрирован")
+
 
 @require_GET
 def set_webhook(request: HttpRequest) -> JsonResponse:
@@ -46,8 +50,18 @@ def index(request: HttpRequest) -> JsonResponse:
 
     json_string = request.body.decode("utf-8")
     update = Update.de_json(json_string)
+
+    logger.info(f"Получено обновление от Telegram: {update.update_id}")
+
+    # Логируем тип обновления
+    if update.message:
+        logger.info(f"Сообщение от {update.message.from_user.id}: {update.message.text}")
+    elif update.callback_query:
+        logger.info(f"Callback от {update.callback_query.from_user.id}: {update.callback_query.data}")
+
     try:
         bot.process_new_updates([update])
+        logger.info("Обновление обработано успешно")
     except ApiTelegramException as e:
         logger.error(f"Telegram exception. {e} {format_exc()}")
     except ConnectionError as e:
@@ -64,6 +78,8 @@ def index(request: HttpRequest) -> JsonResponse:
 def start_command(message: types.Message):
     """Обработчик команды /start с автоматической регистрацией пользователя."""
     from bot.models import User
+
+    logger.info(f"Получена команда /start от пользователя {message.from_user.id}")
 
     user_id = str(message.from_user.id)
     username = message.from_user.username or "none"
@@ -85,12 +101,18 @@ def start_command(message: types.Message):
         user.user_name = first_name
         user.save()
 
+    logger.info(f"Пользователь {user_id} {'создан' if created else 'обновлен'}")
+
     # Отправляем приветственное сообщение
-    bot.send_message(
-        message.chat.id,
-        START_TEXT,
-        reply_markup=main_markup
-    )
+    try:
+        bot.send_message(
+            message.chat.id,
+            START_TEXT,
+            reply_markup=main_markup
+        )
+        logger.info(f"Приветственное сообщение отправлено пользователю {user_id}")
+    except Exception as e:
+        logger.error(f"Ошибка отправки сообщения пользователю {user_id}: {e}")
 
 
 # Bot callback handlers

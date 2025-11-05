@@ -10,18 +10,7 @@ bot = telebot.TeleBot(
     skip_pending=True,
 )
 
-# Установка вебхука при запуске (только если не в локальном режиме)
-try:
-    if not settings.LOCAL and settings.HOOK and settings.BOT_TOKEN:
-        webhook_url = f"{settings.HOOK}/bot/{settings.BOT_TOKEN}"
-        bot.set_webhook(url=webhook_url)
-        logging.info(f'Webhook установлен: {webhook_url}')
-    elif settings.LOCAL:
-        logging.info('Локальный режим - вебхук не устанавливается')
-    else:
-        logging.warning('HOOK или BOT_TOKEN не установлены в настройках')
-except Exception as e:
-    logging.error(f"Ошибка при установке вебхука: {e}")
+# Вебхук будет установлен после регистрации обработчиков в urls.py
 
 # Отправка сообщения при старте
 try:
