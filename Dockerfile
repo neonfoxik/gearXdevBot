@@ -30,7 +30,6 @@ RUN mkdir -p static media
 # Создаем непривилегированного пользователя
 RUN useradd --create-home --shell /bin/bash app \
     && chown -R app:app /app
-USER app
 
 # Открываем порт
 EXPOSE 8000
