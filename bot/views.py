@@ -12,15 +12,7 @@ from telebot import types
 from bot import bot
 from telebot import logger
 from bot.texts import START_TEXT
-from bot.keyboards import (
-    main_markup,
-    check_subscription,
-    coins_markup,
-    referal_markup,
-    UNIVERSAL_BUTTONS,
-    UNIVERSAL_VIDEO_MARKUP,
-    ADMIN_MARKUP
-)
+from bot.keyboards import main_markup
 
 # Логируем регистрацию обработчиков
 logger.info("Регистрация обработчиков команд бота...")
