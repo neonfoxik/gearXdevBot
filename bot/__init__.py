@@ -13,14 +13,16 @@ bot = telebot.TeleBot(
 # Импортируем views для регистрации обработчиков
 from . import views
 
-# Установка вебхука при запуске
+# Установка вебхука при запуске (только если не в локальном режиме)
 try:
-    if settings.HOOK:
+    if not settings.LOCAL and settings.HOOK and settings.BOT_TOKEN:
         webhook_url = f"{settings.HOOK}/bot/{settings.BOT_TOKEN}"
         bot.set_webhook(url=webhook_url)
         logging.info(f'Webhook установлен: {webhook_url}')
+    elif settings.LOCAL:
+        logging.info('Локальный режим - вебхук не устанавливается')
     else:
-        logging.warning('HOOK не установлен в настройках')
+        logging.warning('HOOK или BOT_TOKEN не установлены в настройках')
 except Exception as e:
     logging.error(f"Ошибка при установке вебхука: {e}")
 

@@ -9,7 +9,8 @@ from telebot.apihelper import ApiTelegramException
 from telebot.types import Update
 from telebot import types
 
-from bot import bot, logger
+from bot import bot
+from telebot import logger
 from bot.models import User
 from bot.texts import START_TEXT
 from bot.keyboards import (
