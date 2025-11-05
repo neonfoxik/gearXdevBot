@@ -11,7 +11,6 @@ from telebot import types
 
 from bot import bot
 from telebot import logger
-from bot.models import User
 from bot.texts import START_TEXT
 from bot.keyboards import (
     main_markup,
@@ -64,6 +63,8 @@ def index(request: HttpRequest) -> JsonResponse:
 @bot.message_handler(commands=['start'])
 def start_command(message: types.Message):
     """Обработчик команды /start с автоматической регистрацией пользователя."""
+    from bot.models import User
+
     user_id = str(message.from_user.id)
     username = message.from_user.username or "none"
     first_name = message.from_user.first_name or "Пользователь"
@@ -137,6 +138,8 @@ def main_video_menu_callback(call: types.CallbackQuery):
 @bot.callback_query_handler(func=lambda call: call.data == "newsletter")
 def newsletter_callback(call: types.CallbackQuery):
     """Обработчик рассылки (только для админов)."""
+    from bot.models import User
+
     user_id = str(call.from_user.id)
     try:
         user = User.objects.get(telegram_id=user_id)

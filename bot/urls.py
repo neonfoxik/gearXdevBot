@@ -3,6 +3,9 @@ from django.urls import path
 
 from bot import views
 
+# Импортируем views для регистрации обработчиков бота
+# Это происходит после полной инициализации Django
+_ = views
 
 app_name = 'bot'
 

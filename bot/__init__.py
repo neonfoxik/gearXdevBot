@@ -10,9 +10,6 @@ bot = telebot.TeleBot(
     skip_pending=True,
 )
 
-# Импортируем views для регистрации обработчиков
-from . import views
-
 # Установка вебхука при запуске (только если не в локальном режиме)
 try:
     if not settings.LOCAL and settings.HOOK and settings.BOT_TOKEN:
